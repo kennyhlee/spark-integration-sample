@@ -38,7 +38,7 @@ var scopes = "spark:people_read"; // extend permission with Spark OAuth scopes r
 // Initiate the OAuth flow from the 'index.ejs' template  
 // ------------------------------------------------------------- 
 // -- Comment this section to initiate the flow from  static html page
-/*var initiateURL = "https://api.ciscospark.com/v1/authorize?" 
+var initiateURL = "https://api.ciscospark.com/v1/authorize?" 
     + "client_id=" + clientId 
     + "&response_type=code"
     + "&redirect_uri=" + encodeURIComponent(redirectURI) 
@@ -55,7 +55,7 @@ app.get("/index.html", function (req, res) {
 });
 app.get("/", function (req, res) {
      res.redirect("/index.html");
-});*/
+});
 // -------------------------------------------------------------
 // Statically serve the "/www" directory
 // WARNING: Do not move the 2 lines of code below, as we need this exact precedance order for the static and dynamic HTML generation to work correctly all together
