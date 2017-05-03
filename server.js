@@ -259,7 +259,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         debug("webhook details: " + body);
 
         var str = read(join(__dirname, '/www/webhooks.ejs'), 'utf8');
-        var compiled = ejs.compile(str)({ "webhooks": body});
+        var compiled = ejs.compile(str)({ "webhooks": JSON.stringify(json)});
         res.send(compiled);
     });
 
