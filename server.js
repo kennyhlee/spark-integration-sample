@@ -67,7 +67,7 @@ var myName = "none";
 //
 // Step 2: process OAuth Authorization codes
 //
-app.get("/receive", function (req, res) {
+/*app.get("/receive", function (req, res) {
     // Did the user decline
     if (req.query.error) {
         debug("unknown error: " + req.query.error);
@@ -76,7 +76,7 @@ app.get("/receive", function (req, res) {
     }
     String json = JSON.parse(req.body);
 
-}
+}*/
 
 app.get("/oauth", function (req, res) {
         debug("oauth callback hitted");
