@@ -26,7 +26,7 @@ var app = express();
 var clientId = process.env.CLIENT_ID || "C9901101c66249d7e6b7cb174941a400e2e01f7d80d0b1f08b11665bad5cbb66d";
 var clientSecret = process.env.CLIENT_SECRET || "aaa8f0304a9b49a1654b74a14faf7b939481341ab09c9e47bab9d7c1e54e62a7";
 var redirectURI = process.env.REDIRECT_URI || "http://localhost:8080/oauth"; // where your integration is waiting for Cisco Spark to redirect and send the authorization code
-var state = process.env.STATE || "Test"; // state can be used for security and/or correlation purposes
+var state = process.env.STATE || "CiscoDevNet"; // state can be used for security and/or correlation purposes
 var scopes = "spark:people_read spark:messages_read spark:messages_write"; // extend permission with Spark OAuth scopes required by your example, supported scopes are: https://developer.ciscospark.com/add-integration.html
 //var scopes = "spark:room_read"; // extend permission with Spark OAuth scopes required by your example, supported scopes are: https://developer.ciscospark.com/add-integration.html
 
