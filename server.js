@@ -183,7 +183,6 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
             "authorization": "Bearer " + access_token
         }
     };
-    var nameJson = "unknown";
     request(options, function (error, response, body) {
         if (error) {
             debug("could not reach Cisco Spark to retreive Person's details, error: " + error);
@@ -208,7 +207,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         //      "avatar": "https://1efa7a94ed216783e352-c62266528714497a17239ececf39e9e2.ssl.cf1.rackcdn.com/V1~c2582d2fb9d11e359e02b12c17800f09~aqSu09sCTVOOx45HJCbWHg==~1600",
         //      "created": "2016-02-04T15:46:20.321Z"
         //    }
-        nameJson= JSON.parse(body);
+        var nameJson= JSON.parse(body);
         if ((!nameJson) || (!nameJson.displayName)) {
             debug("could not parse Person details: bad json payload or could not find a displayName.");
             res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your Cisco Spark account details. Try again...</p>");
