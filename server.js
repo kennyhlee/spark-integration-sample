@@ -26,8 +26,8 @@ var app = express();
 var clientId = process.env.CLIENT_ID || "C9901101c66249d7e6b7cb174941a400e2e01f7d80d0b1f08b11665bad5cbb66d";
 var clientSecret = process.env.CLIENT_SECRET || "aaa8f0304a9b49a1654b74a14faf7b939481341ab09c9e47bab9d7c1e54e62a7";
 var redirectURI = process.env.REDIRECT_URI || "http://localhost:8080/oauth"; // where your integration is waiting for Cisco Spark to redirect and send the authorization code
-var state = process.env.STATE || "CiscoDevNet"; // state can be used for security and/or correlation purposes
-var scopes = "spark:people_read"; // extend permission with Spark OAuth scopes required by your example, supported scopes are: https://developer.ciscospark.com/add-integration.html
+var state = process.env.STATE || "Test"; // state can be used for security and/or correlation purposes
+var scopes = "spark:people_read spark:messages_read spark:messages_write"; // extend permission with Spark OAuth scopes required by your example, supported scopes are: https://developer.ciscospark.com/add-integration.html
 //var scopes = "spark:room_read"; // extend permission with Spark OAuth scopes required by your example, supported scopes are: https://developer.ciscospark.com/add-integration.html
 
 
@@ -183,7 +183,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
             "authorization": "Bearer " + access_token
         }
     };
-
+    var nameJson = "unknown";
     request(options, function (error, response, body) {
         if (error) {
             debug("could not reach Cisco Spark to retreive Person's details, error: " + error);
@@ -208,8 +208,8 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         //      "avatar": "https://1efa7a94ed216783e352-c62266528714497a17239ececf39e9e2.ssl.cf1.rackcdn.com/V1~c2582d2fb9d11e359e02b12c17800f09~aqSu09sCTVOOx45HJCbWHg==~1600",
         //      "created": "2016-02-04T15:46:20.321Z"
         //    }
-        var json = JSON.parse(body);
-        if ((!json) || (!json.displayName)) {
+        nameJson= JSON.parse(body);
+        if ((!nameJson) || (!nameJson.displayName)) {
             debug("could not parse Person details: bad json payload or could not find a displayName.");
             res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your Cisco Spark account details. Try again...</p>");
             return;
@@ -218,11 +218,12 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         // Uncomment to send feedback via static HTML code 
         //res.send("<h1>OAuth Integration example for Cisco Spark (static HTML)</h1><p>So happy to meet, " + json.displayName + " !</p>");
         // OR leverage an EJS template
-        var str = read(join(__dirname, '/www/display-name.ejs'), 'utf8');
+       
         //var str = read(join(__dirname, '/togofurther/list-rooms.ejs'), 'utf8');
-        var compiled = ejs.compile(str)({ "displayName": json.displayName });
-        res.send(compiled);
     });
+    var str = read(join(__dirname, '/www/display-name.ejs'), 'utf8');
+    var compiled = ejs.compile(str)({ "displayName": nameJson.displayName });
+    res.send(compiled);
 }
 
 
