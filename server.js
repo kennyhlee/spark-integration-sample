@@ -62,7 +62,7 @@ app.get("/", function (req, res) {
 //          If the section above is commented, the static index.html page will be served instead of the EJS template.
 var path = require('path');
 app.use("/", express.static(path.join(__dirname, 'www')));
-
+var myName = "none";
 
 //
 // Step 2: process OAuth Authorization codes
@@ -218,10 +218,11 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         // Uncomment to send feedback via static HTML code 
         //res.send("<h1>OAuth Integration example for Cisco Spark (static HTML)</h1><p>So happy to meet, " + json.displayName + " !</p>");
         // OR leverage an EJS template
-        var str = read(join(__dirname, '/www/display-name.ejs'), 'utf8');
-        var compiled = ejs.compile(str)({ "displayName": nameJson.displayName , "webhooks": "none"});
-        res.send(compiled);
+        //var str = read(join(__dirname, '/www/display-name.ejs'), 'utf8');
+        //var compiled = ejs.compile(str)({ "displayName": nameJson.displayName , "webhooks": "none"});
+        //res.send(compiled);
         //var str = read(join(__dirname, '/togofurther/list-rooms.ejs'), 'utf8');
+        myName =  nameJson.displayName;
     });
 
     // Retreive webhooks: GET https://api.ciscospark.com/v1/webhooks
@@ -261,7 +262,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         //res.send("<h1>OAuth Integration example for Cisco Spark (static HTML)</h1><p>So happy to meet, " + json.displayName + " !</p>");
         // OR leverage an EJS template
         var str = read(join(__dirname, '/www/display-name.ejs'), 'utf8');
-        var compiled = ejs.compile(str)({ "displayName": "kl" , "webhooks": json});
+        var compiled = ejs.compile(str)({ "displayName": myName , "webhooks": json.toString()});
         res.send(compiled);
         //var str = read(join(__dirname, '/togofurther/list-rooms.ejs'), 'utf8');
     });
