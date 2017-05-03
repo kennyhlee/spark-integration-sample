@@ -256,7 +256,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
             return;
         }
 
-        debug("webhook details: " + json);
+        debug("webhook details: " + body);
 
         // Uncomment to send feedback via static HTML code
         //res.send("<h1>OAuth Integration example for Cisco Spark (static HTML)</h1><p>So happy to meet, " + json.displayName + " !</p>");
