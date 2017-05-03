@@ -227,7 +227,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
     // Retreive webhooks: GET https://api.ciscospark.com/v1/webhooks
     var options_webhook = {
         method: 'GET',
-        url: 'https://api.ciscospark.com/v1/webhooks,
+        url: 'https://api.ciscospark.com/v1/webhooks',
         headers:
             {
                 "authorization": "Bearer " + access_token
