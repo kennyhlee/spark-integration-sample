@@ -67,97 +67,109 @@ var myName = "none";
 //
 // Step 2: process OAuth Authorization codes
 //
-app.get("/oauth", function (req, res) {
-    debug("oauth callback hitted");
-
+app.get("/receive", function (req, res) {
     // Did the user decline
     if (req.query.error) {
-       if (req.query.error == "access_denied") {
-            debug("user declined");
-            res.send("<h1>OAuth Integration could not complete</h1><p>Got your NO, ciao.</p>");
-            return;
-        }
-
-        if (req.query.error == "server_error") {
-            debug("server error");
-            res.send("<h1>OAuth Integration could not complete</h1><p>Cisco Spark send a Server Error, Auf Wiedersehen.</p>");
-            return;
-        }
-
         debug("unknown error: " + req.query.error);
-        res.send("<h1>OAuth Integration could not complete</h1><p>Error case not implemented, au revoir.</p>");
+        res.send("<p>req.query.error</p>");
         return;
     }
+    String json = JSON.parse(req.body);
 
-    // Check request parameters correspond to the spec
-    if ((!req.query.code) || (!req.query.state)) {
-        debug("expected code & state query parameters are not present");
-        res.send("<h1>OAuth Integration could not complete</h1><p>Unexpected query parameters, ignoring...</p>");
-        return;
-    }
+}
 
-    // Check State 
-    // [NOTE] we implement a Security check below, but the State variable can also be leveraged for Correlation purposes
-    if (state != req.query.state) {
-        debug("State does not match");
-        res.send("<h1>OAuth Integration could not complete</h1><p>Wrong secret, aborting...</p>");
-        return;
-    }
+app.get("/oauth", function (req, res) {
+        debug("oauth callback hitted");
 
-    // Retreive access token (expires in 14 days) & refresh token (expires in 90 days)
-    //   { 
-    //      "access_token":"N2MxMmE0YzgtMjY0MS00MDIxLWFmZDItNTg0MGVkOWEyNWQ3YmMzMmFlODItYzAy",
-    //      "expires_in":1209599,
-    //      "refresh_token":"NjBjNDk3MjktMjUwMy00YTlkLWJkOTctM2E2MjE3YWU1NmI4Njk3Y2IzODctMjBh",
-    //      "refresh_token_expires_in":7775999
-    //   }
-    var options = {
-        method: "POST",
-        url: "https://api.ciscospark.com/v1/access_token",
-        headers: {
-            "content-type": "application/x-www-form-urlencoded"
-        },
-        form: {
-            grant_type: "authorization_code",
-            client_id: clientId,
-            client_secret: clientSecret,
-            code: req.query.code,
-            redirect_uri: redirectURI
-        }
-    };
-    request(options, function (error, response, body) {
-        if (error) {
-            debug("could not reach Cisco Spark to retreive access & refresh tokens");
-            res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your access token. Try again...</p>");
-            return;
-        }
-
-        if (response.statusCode != 200) {
-            debug("access token not issued with status code: " + response.statusCode);
-            switch (response.statusCode) {
-                case 401:
-                    res.send("<h1>OAuth Integration could not complete</h1><p>OAuth authentication error. Ask the service contact to check the secret.</p>");
-                    break;
-                default:
-                    res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your access token. Try again...</p>");
-                    break;
+        // Did the user decline
+        if (req.query.error) {
+            if (req.query.error == "access_denied") {
+                debug("user declined");
+                res.send("<h1>OAuth Integration could not complete</h1><p>Got your NO, ciao.</p>");
+                return;
             }
+
+            if (req.query.error == "server_error") {
+                debug("server error");
+                res.send("<h1>OAuth Integration could not complete</h1><p>Cisco Spark send a Server Error, Auf Wiedersehen.</p>");
+                return;
+            }
+
+            debug("unknown error: " + req.query.error);
+            res.send("<h1>OAuth Integration could not complete</h1><p>Error case not implemented, au revoir.</p>");
             return;
         }
 
-        // Check payload
-        var json = JSON.parse(body);
-        if ((!json) || (!json.access_token) || (!json.expires_in) || (!json.refresh_token) || (!json.refresh_token_expires_in)) {
-            debug("could not parse access & refresh tokens");
-            res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your access token. Try again...</p>");
+        // Check request parameters correspond to the spec
+        if ((!req.query.code) || (!req.query.state)) {
+            debug("expected code & state query parameters are not present");
+            res.send("<h1>OAuth Integration could not complete</h1><p>Unexpected query parameters, ignoring...</p>");
             return;
         }
 
-        // Cisco Spark OAuth flow completed
-        debug("OAuth flow completed, for state: " + state, ", access token: " + json.access_token);
-        oauthFlowCompleted(state, json.access_token, json.refresh_token, res);
+        // Check State
+        // [NOTE] we implement a Security check below, but the State variable can also be leveraged for Correlation purposes
+        if (state != req.query.state) {
+            debug("State does not match");
+            res.send("<h1>OAuth Integration could not complete</h1><p>Wrong secret, aborting...</p>");
+            return;
+        }
+
+        // Retreive access token (expires in 14 days) & refresh token (expires in 90 days)
+        //   {
+        //      "access_token":"N2MxMmE0YzgtMjY0MS00MDIxLWFmZDItNTg0MGVkOWEyNWQ3YmMzMmFlODItYzAy",
+        //      "expires_in":1209599,
+        //      "refresh_token":"NjBjNDk3MjktMjUwMy00YTlkLWJkOTctM2E2MjE3YWU1NmI4Njk3Y2IzODctMjBh",
+        //      "refresh_token_expires_in":7775999
+        //   }
+        var options = {
+            method: "POST",
+            url: "https://api.ciscospark.com/v1/access_token",
+            headers: {
+                "content-type": "application/x-www-form-urlencoded"
+            },
+            form: {
+                grant_type: "authorization_code",
+                client_id: clientId,
+                client_secret: clientSecret,
+                code: req.query.code,
+                redirect_uri: redirectURI
+            }
+        };
+        request(options, function (error, response, body) {
+            if (error) {
+                debug("could not reach Cisco Spark to retreive access & refresh tokens");
+                res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your access token. Try again...</p>");
+                return;
+            }
+
+            if (response.statusCode != 200) {
+                debug("access token not issued with status code: " + response.statusCode);
+                switch (response.statusCode) {
+                    case 401:
+                        res.send("<h1>OAuth Integration could not complete</h1><p>OAuth authentication error. Ask the service contact to check the secret.</p>");
+                        break;
+                    default:
+                        res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your access token. Try again...</p>");
+                        break;
+                }
+                return;
+            }
+
+            // Check payload
+            var json = JSON.parse(body);
+            if ((!json) || (!json.access_token) || (!json.expires_in) || (!json.refresh_token) || (!json.refresh_token_expires_in)) {
+                debug("could not parse access & refresh tokens");
+                res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your access token. Try again...</p>");
+                return;
+            }
+
+            // Cisco Spark OAuth flow completed
+            debug("OAuth flow completed, for state: " + state, ", access token: " + json.access_token);
+            oauthFlowCompleted(state, json.access_token, json.refresh_token, res);
+        });
     });
-});
+}
 
 
 //
@@ -182,48 +194,51 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         {
             "authorization": "Bearer " + access_token
         }
+    };i*/
+
+    // create webhook for roomId=Y2lzY29zcGFyazovL3VzL01FU1NBR0UvM2RhNzAxZjAtMzAzMy0xMWU3LWI5OGItMWQ1ZDZmOGY1ZTVi
+
+    var body_createWebhook = JSON.stringify({
+        "name": "Message auto webhook creation",
+        "targetUrl": "http://requestb.in/zfd5s6zf",
+        "resource": "messages",
+        "event": "created",
+        "filter": "roomId=Y2lzY29zcGFyazovL3VzL1JPT00vNDMyZmJlYjAtMzAzMi0xMWU3LWIxYTgtNDcxYjQzOWM2OGM5"
+    })
+    var options_createWebhook = {
+        method: 'POST',
+        url: 'https://api.ciscospark.com/v1/webhooks',
+        headers:
+            {
+                "authorization": "Bearer " + access_token
+            }
     };
 
-    request(options, function (error, response, body) {
+    request(options_createWebhook, function (error, response, body_createWebhook) {
         if (error) {
-            debug("could not reach Cisco Spark to retreive Person's details, error: " + error);
-            res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your Cisco Spark account details. Try again...</p>");
+            debug("could not reach Cisco Spark to create webhook's details, error: " + error);
+            res.send("<p>Sorry, could not create your Cisco Spark webhook details. Try again...</p>");
             return;
         }
 
         // Check the call is successful
         if (response.statusCode != 200) {
-            debug("could not retreive your details, /people/me returned: " + response.statusCode);
-            res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your Cisco Spark account details. Try again...</p>");
+            debug("could not retreive your details, /webhooks returned: " + response.statusCode);
+            res.send("<p>Sorry, could not create your Cisco Spark webhook. Try again...</p>");
             return;
         }
 
-        // Check JSON payload is compliant with specs https://api.ciscospark.com/v1/people/me
-        //    {
-        //      "id": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS85MmIzZGQ5YS02NzVkLTRhNDEtOGM0MS0yYWJkZjg5ZjQ0ZjQ",
-        //      "emails": [
-        //        "stsfartz@cisco.com"
-        //      ],
-        //      "displayName": "Steve Sfartz",
-        //      "avatar": "https://1efa7a94ed216783e352-c62266528714497a17239ececf39e9e2.ssl.cf1.rackcdn.com/V1~c2582d2fb9d11e359e02b12c17800f09~aqSu09sCTVOOx45HJCbWHg==~1600",
-        //      "created": "2016-02-04T15:46:20.321Z"
-        //    }
-        var nameJson= JSON.parse(body);
-        if ((!nameJson) || (!nameJson.displayName)) {
-            debug("could not parse Person details: bad json payload or could not find a displayName.");
-            res.send("<h1>OAuth Integration could not complete</h1><p>Sorry, could not retreive your Cisco Spark account details. Try again...</p>");
+        var json= JSON.parse(body);
+        if ((!json)) {
+            debug("could not parse webhook creation result: bad json payload");
+            res.send("<p>Sorry, could not retreive your Cisco Spark account details. Try again...</p>");
             return;
         }
 
-        // Uncomment to send feedback via static HTML code 
-        //res.send("<h1>OAuth Integration example for Cisco Spark (static HTML)</h1><p>So happy to meet, " + json.displayName + " !</p>");
-        // OR leverage an EJS template
-        //var str = read(join(__dirname, '/www/display-name.ejs'), 'utf8');
-        //var compiled = ejs.compile(str)({ "displayName": nameJson.displayName , "webhooks": "none"});
+        //var str = read(join(__dirname, '/www/webhooks.ejs'), 'utf8');
+        //var compiled = ejs.compile(str)({ "webhooks": JSON.stringify(json)});
         //res.send(compiled);
-        //var str = read(join(__dirname, '/togofurther/list-rooms.ejs'), 'utf8');
-        myName =  nameJson.displayName;
-    });*/
+    });
 
     // Retreive webhooks: GET https://api.ciscospark.com/v1/webhooks
     var options_webhook = {
