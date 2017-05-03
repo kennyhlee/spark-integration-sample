@@ -219,7 +219,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         // OR leverage an EJS template
 
         var str = read(join(__dirname, '/www/display-name.ejs'), 'utf8');
-        var compiled = ejs.compile(str)({ "displayName": json.displayName });
+        var compiled = ejs.compile(str)({ "displayName": json.displayName , "webhooks": json.displayName});
         res.send(compiled);
         //var str = read(join(__dirname, '/togofurther/list-rooms.ejs'), 'utf8');
     });
