@@ -169,7 +169,6 @@ app.get("/oauth", function (req, res) {
             oauthFlowCompleted(state, json.access_token, json.refresh_token, res);
         });
     });
-}
 
 
 //
