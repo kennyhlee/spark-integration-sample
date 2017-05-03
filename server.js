@@ -175,7 +175,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
     //
 
     // Retreive user name: GET https://api.ciscospark.com/v1/people/me
-    var options = {
+    /*var options = {
         method: 'GET',
         url: 'https://api.ciscospark.com/v1/people/me',
         headers:
@@ -223,7 +223,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         //res.send(compiled);
         //var str = read(join(__dirname, '/togofurther/list-rooms.ejs'), 'utf8');
         myName =  nameJson.displayName;
-    });
+    });*/
 
     // Retreive webhooks: GET https://api.ciscospark.com/v1/webhooks
     var options_webhook = {
