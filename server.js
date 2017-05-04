@@ -216,7 +216,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
     request(options_createWebhook, function (error, response, body_createWebhook) {
         if (error) {
             debug("could not reach Cisco Spark to create webhook's details, error: " + error);
-            res.send("<p>Sorry, could not create your Cisco Spark webhook details. Try again... " + error.toString() + response.body) + "... </p>");
+            res.send("<p>Sorry, could not create your Cisco Spark webhook details. Try again... " + error.toString() + response.body + "... </p>");
             return;
         }
 
