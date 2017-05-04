@@ -234,13 +234,13 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
             return;
         }
 
-        //var str = read(join(__dirname, '/www/webhooks.ejs'), 'utf8');
-        //var compiled = ejs.compile(str)({ "webhooks": JSON.stringify(json)});
-        //res.send(compiled);
+        var str = read(join(__dirname, '/www/webhooks.ejs'), 'utf8');
+        var compiled = ejs.compile(str)({ "webhooks": JSON.stringify(json)});
+        res.send(compiled);
     });
 
     // Retreive webhooks: GET https://api.ciscospark.com/v1/webhooks
-    var options_webhook = {
+    /*var options_webhook = {
         method: 'GET',
         url: 'https://api.ciscospark.com/v1/webhooks',
         headers:
@@ -275,7 +275,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         var str = read(join(__dirname, '/www/webhooks.ejs'), 'utf8');
         var compiled = ejs.compile(str)({ "webhooks": JSON.stringify(json)});
         res.send(compiled);
-    });
+    });*/
 
 }
 
