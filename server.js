@@ -209,6 +209,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         url: 'https://api.ciscospark.com/v1/webhooks',
         headers:
             {
+                "content-type": "application/json",
                 "authorization": "Bearer " + access_token
             },
         body: body_createWebhook
