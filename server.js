@@ -223,7 +223,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         // Check the call is successful
         if (response.statusCode != 200) {
             debug("could not create your details, /webhooks returned: " + response.statusCode);
-            res.send("<p>Sorry, could not create your Cisco Spark webhook. Try again...</p>");
+            res.send("<p>Sorry, could not create your Cisco Spark webhook. Try again... " +  response.statusCode +  response.body  + "........</p>");
             return;
         }
 
