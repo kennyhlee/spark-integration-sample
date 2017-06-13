@@ -27,9 +27,9 @@ var clientId = process.env.CLIENT_ID || "C9901101c66249d7e6b7cb174941a400e2e01f7
 var clientSecret = process.env.CLIENT_SECRET || "aaa8f0304a9b49a1654b74a14faf7b939481341ab09c9e47bab9d7c1e54e62a7";
 var redirectURI = process.env.REDIRECT_URI || "http://localhost:8080/oauth"; // where your integration is waiting for Cisco Spark to redirect and send the authorization code
 var state = process.env.STATE || "Test"; // state can be used for security and/or correlation purposes
-var scopes = "spark:people_read spark:messages_read spark:messages_write"; // extend permission with Spark OAuth scopes required by your example, supported scopes are: https://developer.ciscospark.com/add-integration.html
+//var scopes = "spark:people_read spark:messages_read spark:messages_write"; // extend permission with Spark OAuth scopes required by your example, supported scopes are: https://developer.ciscospark.com/add-integration.html
 //var scopes = "spark:room_read"; // extend permission with Spark OAuth scopes required by your example, supported scopes are: https://developer.ciscospark.com/add-integration.html
-
+var scopes = "spark:all spark-admin:roles_read spark-admin:metrics_read spark-admin:organizations_read spark:kms spark-admin:people_write spark-admin:people_read spark-admin:licenses_read"
 
 //
 // Step 1: initiate the OAuth flow
@@ -48,8 +48,7 @@ var read = require("fs").readFileSync;
 var join = require("path").join;
 var str = read(join(__dirname, '/www/initiate.ejs'), 'utf8');
 var ejs = require("ejs");
-var compiled = ejs.compile(str)({ "link": initiateURL }); // inject the link into the template
-app.get("/index.html", function (req, res) {
+
     debug("serving the integration home page (generated from an EJS template)");
     res.send(compiled);
 });
@@ -96,7 +95,7 @@ app.get("/oauth", function (req, res) {
             }
 
             debug("unknown error: " + req.query.error);
-            res.send("<h1>OAuth Integration could not complete</h1><p>Error case not implemented, au revoir.</p>");
+            res.send("<h1>OAuth Integration could not complete</h1><p>Error case not implemented, au revoir.</p>"+req.query.error);
             return;
         }
 
@@ -193,7 +192,7 @@ function oauthFlowCompleted(state, access_token, refresh_token, res) {
         {
             "authorization": "Bearer " + access_token
         }
-    };i*/
+    };*/
 
     // create webhook for roomId=Y2lzY29zcGFyazovL3VzL01FU1NBR0UvM2RhNzAxZjAtMzAzMy0xMWU3LWI5OGItMWQ1ZDZmOGY1ZTVi
 
